@@ -115,6 +115,8 @@ var jexcel = (function(el, options) {
         // Table overflow
         tableOverflow:false,
         tableHeight:'300px',
+        rowLoadChunkSize: 30,
+        scrollCheckBoundsToleration: 30,
         tableWidth:null,
         // Meta
         meta: null,
@@ -3014,11 +3016,11 @@ var jexcel = (function(el, options) {
         }
 
         // Top position check
-        if (y > (obj.content.scrollTop + 30) && y < (obj.content.scrollTop + h1)) {
+        if (y > (obj.content.scrollTop + obj.options.scrollCheckBoundsToleration) && y < (obj.content.scrollTop + h1)) {
             // In the viewport
         } else {
             // Out of viewport
-            if (y < obj.content.scrollTop + 30) {
+            if (y < obj.content.scrollTop + obj.options.scrollCheckBoundsToleration) {
                 obj.content.scrollTop = y - h2;
             } else {
                 obj.content.scrollTop = y - (h1 - 2);
@@ -3033,7 +3035,7 @@ var jexcel = (function(el, options) {
             // In the viewport
         } else {
             // Out of viewport
-            if (x < obj.content.scrollLeft + 30) {
+            if (x < obj.content.scrollLeft + obj.options.scrollCheckBoundsToleration) {
                 obj.content.scrollLeft = x;
                 if (obj.content.scrollLeft < 50) {
                     obj.content.scrollLeft = 0;
@@ -5143,7 +5145,7 @@ var jexcel = (function(el, options) {
                     obj.updateSelectionFromCoords(obj.selectedCell[0], obj.selectedCell[1], obj.selectedCell[2], obj.selectedCell[3]);
                 } else {
                     var item = parseInt(obj.tbody.firstChild.getAttribute('data-y'));
-                    if (obj.selectedCell[1] - item < 30) {
+                    if (obj.selectedCell[1] - item < obj.options.scrollCheckBoundsToleration) {
                         obj.loadUp();
                         obj.updateSelectionFromCoords(obj.selectedCell[0], obj.selectedCell[1], obj.selectedCell[2], obj.selectedCell[3]);
                     }
@@ -5557,7 +5559,7 @@ var jexcel = (function(el, options) {
                 item = results.indexOf(item);
             }
             if (item > 0) {
-                for (var j = 0; j < 30; j++) {
+                for (var j = 0; j < obj.options.rowLoadChunkSize; j++) {
                     item = item - 1;
                     if (item > -1) {
                         if (obj.options.search == true && obj.results) {
@@ -5591,7 +5593,7 @@ var jexcel = (function(el, options) {
                 item = results.indexOf(item);
             }
             if (item < obj.rows.length - 1) {
-                for (var j = 0; j <= 30; j++) {
+                for (var j = 0; j <= obj.options.rowLoadChunkSize; j++) {
                     if (item < results.length) {
                         if (obj.options.search == true && obj.results) {
                             obj.tbody.appendChild(obj.rows[results[item]]);
